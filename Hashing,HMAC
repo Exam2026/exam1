@@ -1,0 +1,83 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MD5 and SHA-1 Digests
+  m = msg.encode()
+  return [hashlib.md5(m).hexdigest(), hashlib.sha1(m).hexdigest()]
+
+SHA-256 Digest
+  return hashlib.sha256(msg.encode()).hexdigest()
+
+SHA-512 Digest
+  return hashlib.sha512(msg.encode()).hexdigest()
+
+Double SHA-1
+  return hashlib.sha1(hashlib.sha1(msg.encode()).digest()).hexdigest()
+
+SHA-256 of Hex-Encoded Bytes
+  return hashlib.sha256(bytes.fromhex(hex_data)).hexdigest()
+
+HMAC-MD5 (String Key)
+  return hmac.new(key.encode(), msg.encode(), hashlib.md5).hexdigest()
+
+Identify Hash Algorithm by Length
+  return {32: "md5", 40: "sha1", 64: "sha256"}[len(digest)]
+
+Concatenated MD5 and SHA-1
+  m = msg.encode()
+  return hashlib.md5(m).hexdigest() + hashlib.sha1(m).hexdigest()
+
+Iterated SHA-256 (Key Stretching)
+   x = msg.encode()
+  for _ in range(n):
+      x = hashlib.sha256(x).digest()
+  return x.hex()
+
+Salted SHA-256
+  return hashlib.sha256((salt + pw).encode()).hexdigest()
+
+HMAC-SHA1 Verify (Hex Key)
+  key = bytes.fromhex(hex_key)
+  tag = bytes.fromhex(hex_tag)
+  calc = hmac.new(key, msg.encode(), hashlib.sha1).digest()
+  return "VALID" if hmac.compare_digest(calc, tag) else "INVALID"
+  
+HMAC-SHA256 Verify (String Key)
+  tag = bytes.fromhex(hex_tag)
+  calc = hmac.new(key.encode(), msg.encode(), hashlib.sha256).digest()
+  return "VALID" if hmac.compare_digest(calc, tag) else "INVALID"
+
+HMAC-SHA1 Generate (Hex Key)
+  key = bytes.fromhex(hex_key)
+  return hmac.new(key, msg.encode(), hashlib.sha1).hexdigest()
+
+HMAC-MD5 Generate (Hex Key)
+  key = bytes.fromhex(hex_key)
+  return hmac.new(key, msg.encode(), hashlib.md5).hexdigest()
+
+HMAC vs Naive H(key||msg)
+  k = key.encode()
+  m = msg.encode()
+  naive = hashlib.sha256(k + m).hexdigest()
+  hmac_tag = hmac.new(k, m, hashlib.sha256).hexdigest()
+  return [naive, hmac_tag]
+
+HMAC-SHA1 Generate (Hex Key)
+  key = bytes.fromhex(hex_key)
+  return hmac.new(key, msg.encode(), hashlib.sha1).hexdigest()
