@@ -1,0 +1,43 @@
+AES-CBC Decryption
+def solution(key: str, iv: str, ciphertext: str) -> str:
+    key = bytes.fromhex(key)
+    iv = bytes.fromhex(iv)
+    c = bytes.fromhex(ciphertext)
+    p = b''
+    for i in range(0, len(c), 16):
+        b = c[i:i+16]
+        d = aes_decrypt_block(key, b)
+        p += bytes([d[j] ^ iv[j] for j in range(16)])
+        iv = b
+    return pkcs7_unpad(p).decode()
+
+AES-CBC Encryption
+def solution(key: str, iv: str, plaintext: str) -> str:
+    key = bytes.fromhex(key)
+    iv = bytes.fromhex(iv)
+    p = pkcs7_pad(plaintext.encode())
+    c = b''
+    for i in range(0, len(p), 16):
+        b = p[i:i+16]
+        b = bytes([b[j] ^ iv[j] for j in range(16)])
+        iv = aes_encrypt_block(key, b)
+        c += iv
+    return c.hex()
+
+AES-ECB Decryption
+def solution(key: str, ciphertext: str) -> str:
+    key = bytes.fromhex(key)
+    c = bytes.fromhex(ciphertext)
+    p = b''
+    for i in range(0, len(c), 16):
+        p += aes_decrypt_block(key, c[i:i+16])
+    return pkcs7_unpad(p).decode()
+
+AES-ECB Encryption
+def solution(key: str, plaintext: str) -> str:
+    key = bytes.fromhex(key)
+    p = pkcs7_pad(plaintext.encode())
+    c = b''
+    for i in range(0, len(p), 16):
+        c += aes_encrypt_block(key, p[i:i+16])
+    return c.hex()
